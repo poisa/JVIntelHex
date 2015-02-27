@@ -222,5 +222,3 @@ JVIntelHEX.prototype.getHEXAsBinaryString = function(prettyOutput)
 
     return binaryString;
 };
-
-exports.JVIntelHEX = JVIntelHEX;
