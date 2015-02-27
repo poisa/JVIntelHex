@@ -17,7 +17,7 @@
 
 /**
  * Lightweight implementation of the Intel HEX format
- * 
+ *
  * @param array   an array of bytes
  * @param int     byteCount Usually 16 or 32
  * @param byte    startAddress
@@ -60,7 +60,8 @@ JVIntelHEX.prototype.createRecords = function()
             }
         }
 
-        checksum += currentAddress;
+        // Add MSB and LSB of address rather than entire address
+        checksum += (currentAddress & 0xFF) + ((currentAddress & 0xFF00) >> 8);
         checksum += parseInt(this.RECORD_TYPE_DATA, 16);
         checksum += rowByteCount;
 
@@ -120,6 +121,7 @@ JVIntelHEX.prototype.calculateChecksum = function(data)
  */
 JVIntelHEX.prototype.dec2hex = function(d, padding)
 {
+
     var hex = Number(d).toString(16);
     padding = typeof (padding) === "undefined" || padding === null ? padding = 2 : padding;
 
@@ -149,11 +151,11 @@ JVIntelHEX.prototype.getHEXFile = function(lineSeparator)
     if (typeof lineSeparator === 'undefined') {
         lineSeparator = "\n";
     }
-    
+
     returnValue = '';
     for (i = 0; i < this.records.length; i++) {
        returnValue += this.records[i] + lineSeparator;
-    }   
+    }
     return returnValue;
 };
 
@@ -169,7 +171,7 @@ JVIntelHEX.prototype.getHEXAsByteArray = function()
 {
     var data = this.getHEXFile('').replace(/:/g, '');
     var dataLength = data.length;
-    
+
     byteArray = [];
 
     for (i = 0; i < dataLength; i += 2) {
@@ -184,7 +186,7 @@ JVIntelHEX.prototype.getHEXAsByteArray = function()
  *
  * Eg:
  *    10000111001000101010101111111010000, etc, etc
- *    
+ *
  * @param bool prettyOutput Wheter to format the string with human readable spaces
  * @returns string
  */
@@ -220,3 +222,5 @@ JVIntelHEX.prototype.getHEXAsBinaryString = function(prettyOutput)
 
     return binaryString;
 };
+
+exports.JVIntelHEX = JVIntelHEX;
